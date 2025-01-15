@@ -1,4 +1,4 @@
-def continue_or_exit(message):
+def continue_or_exit(message: str) -> bool:
     """
     Prompts the user to continue or exit based on their input.
 
@@ -15,3 +15,4 @@ def continue_or_exit(message):
             return True
         else:
             return False
+
