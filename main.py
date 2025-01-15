@@ -1,13 +1,18 @@
 from db import create_connection_mysql_db_query, create_connection_mysql_db_write
 from ui import *
-from queries import *
 
 def main():
+    """
+    Main function to run the movie search system.
+
+    Establishes database connections and displays the main menu.
+    Handles user choices for searching movies, viewing popular queries, and exiting the application.
+
+    """
     try:
         connection_query = create_connection_mysql_db_query()
         connection_write = create_connection_mysql_db_write()
-        print("\nДобро пожаловать в систему поиска фильмов!")
-
+        print("\033[93m \nWelcome to the Movie Search System!\033[0m")
         while True:
             choice = show_menu()
 
@@ -19,25 +24,21 @@ def main():
 
             elif choice == "3":
                 choice_3(connection_query, connection_write)
+
             elif choice == "4":
-                try:
-                    show_popular_queries(connection_write)
-                except (ValueError, RuntimeError) as e:
-                    if not continue_or_exit(f"{str(e)}. Try again?"):
-                        break
-                    continue
+                choice_4(connection_write)
+                input("\033[94mPress any key to continue...\033[0m")
+
             elif choice == "5":
-                print("Goodbye!")
+                print("\033[93mGoodbye!\033[0m")
                 break
+
             else:
-                print("Некорректный выбор, попробуйте снова")
+                print("\033[96mInvalid choice, please try again\033[0m")
 
     finally:
-        if 'connection_query' in locals():
-            connection_query.close()
-        if 'connection_write' in locals():
-            connection_write.close()
-
+        connection_query.close()
+        connection_write.close()
 
 if __name__ == "__main__":
     main()

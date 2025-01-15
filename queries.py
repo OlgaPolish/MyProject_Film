@@ -1,6 +1,8 @@
 from print_results import print_results_as_table
+from pymysql.err import MySQLError
+from typing import List, Tuple, Optional  # Добавлен импорт
 
-def get_categories(connection_query):
+def get_categories(connection_query) -> List[Tuple[int, str]]:
     """
     Retrieve a list of categories from the database.
 
@@ -20,7 +22,7 @@ def get_categories(connection_query):
     else:
         raise RuntimeError("No categories found.")
 
-def search_by_keyword(connection_query, connection_write, keyword):
+def search_by_keyword(connection_query, connection_write, keyword: str) -> None:
     """
     Search for films by a keyword in their description.
 
@@ -40,7 +42,7 @@ def search_by_keyword(connection_query, connection_write, keyword):
     else:
         raise RuntimeError("No results found for the given keyword.")
 
-def get_ratings(connection_write):
+def get_ratings(connection_write) -> List[Tuple[int, str, str]]:
     """
     Retrieve a list of available ratings from the database.
 
@@ -60,7 +62,7 @@ def get_ratings(connection_write):
     else:
         raise RuntimeError("No ratings found.")
 
-def get_movies_by_category(connection_query, connection_write, category_id, year):
+def get_movies_by_category(connection_query, connection_write, category_id: int, year: int) -> bool:
     """
     Retrieve a list of movies for a specific category and release year.
 
@@ -97,7 +99,7 @@ def get_movies_by_category(connection_query, connection_write, category_id, year
         raise RuntimeError(f"An unexpected error occurred: {e}")
     return True
 
-def search_by_rating_and_year(connection_query, connection_write, rating, year):
+def search_by_rating_and_year(connection_query, connection_write, rating: str, year: int) -> bool:
     """
     Search for films by rating and release year.
 
@@ -134,7 +136,7 @@ def search_by_rating_and_year(connection_query, connection_write, rating, year):
         raise RuntimeError(f"An unexpected error occurred: {e}")
     return True
 
-def show_popular_queries(connection_write):
+def show_popular_queries(connection_write) -> None:
     """
     Display the most popular queries based on their frequency.
 
@@ -156,7 +158,7 @@ def show_popular_queries(connection_write):
     else:
         raise RuntimeError("No popular queries found.")
 
-def log_query(connection_write, query_text, query_type, keyword):
+def log_query(connection_write, query_text: str, query_type: str, keyword: str) -> None:
     """
     Log a query into the query history table.
 
@@ -172,7 +174,7 @@ def log_query(connection_write, query_text, query_type, keyword):
     """
     execute_query(connection_write, insert_query, (query_text, query_type, keyword))
 
-def execute_query(connection, query, parameters=None):
+def execute_query(connection, query: str, parameters: Optional[Tuple] = None) -> Optional[List[Tuple]]:
     """
     Executes a SQL query on the provided database connection.
 
@@ -208,6 +210,3 @@ def execute_query(connection, query, parameters=None):
         # Rollback the transaction in case of an error
         connection.rollback()
         raise RuntimeError(f"An error occurred during query execution: {e}")
-    finally:
-        # Ensure the cursor is closed to release resources
-        cursor.close()
