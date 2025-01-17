@@ -154,9 +154,48 @@ def show_popular_queries(connection_write) -> None:
     """
     results = execute_query(connection_write, query)
     if results:
-        print_results_as_table(results, ["Query Type", "Count"])
+        print("\nPopular Queries:")
+        print_results_as_table(results, ["Query_type", "Count"])
+
+        # Ask the user for the query number
+        choice = input("\nEnter the query number to get all records: ").strip()
+
+        if choice.isdigit() and 1 <= int(choice) <= len(results):
+            selected_query_type = results[int(choice) - 1][0]  # Get the selected Query Type
+            fetch_and_display_records(connection_write, selected_query_type)
+        else:
+            print("Invalid number. Please try again.")
     else:
         raise RuntimeError("No popular queries found.")
+
+def fetch_and_display_records(connection_write, query_type: str) -> None:
+    """
+    Fetch and display records for a specific query type, grouped by Keyword.
+
+    Args:
+        connection_write (object): Database connection object for querying data.
+        query_type (str): The type of query to filter by.
+
+    Returns:
+        None
+    """
+    query = """
+    SELECT 
+        COUNT(ID_Query) AS ID_Query, 
+        Query_type, 
+        Keyword
+    FROM History
+    WHERE Query_type = %s
+    GROUP BY Keyword, Query_type
+    ORDER BY ID_Query DESC;
+    """
+
+    results = execute_query(connection_write, query, (query_type,))
+
+    if results:
+        print_results_as_table(results, ["ID_Query", "Query_Type", "Keyword"])
+    else:
+        raise RuntimeError(f"No records for query type: {query_type}.") #ghjdthbnm!
 
 def log_query(connection_write, query_text: str, query_type: str, keyword: str) -> None:
     """

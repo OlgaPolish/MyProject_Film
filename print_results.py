@@ -43,4 +43,5 @@ def print_results_as_table(data: Iterable[Tuple], column_names: List[str]) -> No
     # Print remaining rows, if any
     if table.rows:
         print(table)
+        return
 
