@@ -1,53 +1,52 @@
-### Project Description: Movie Search
+### Project Description: Console Application for Movie Search
 
-The project is a web application for searching movies, allowing users to search by various criteria such as keywords, category, release year, and rating. The main goal of the system is to provide users with a convenient interface for finding movies of interest and obtaining information about them.
+The project represents a console application for searching movies, which uses the Sakila database as the data source. The main goal of the system is to provide users with a convenient interface for finding movies of interest and obtaining information about them.
 
 ---
 
 ### Database
-**MySQL** is used to store information about movies, categories, ratings, and query history. The project defines two database configurations: for reading and writing.
+The application uses **MySQL** to store information about movies, categories, ratings, and search history. Students need to install the Sakila test database on a local server. Information about movies and related data is stored in a structured way, which facilitates access and manipulation of this data.
 
 ---
 
 ### Project Files
 - **db.py**: Contains functions for connecting to the database and handling connection errors.
-- **main.py**: The main file that runs the application and processes user input.
+- **main.py**: The main file that launches the application and processes user input.
 - **my_exceptions.py**: Defines functions for handling user requests to continue or exit.
-- **print_results.py**: Responsible for displaying query results in a table format with pagination.
+- **print_results.py**: Responsible for displaying the query results in a tabular format with pagination.
 - **queries.py**: Contains functions for executing various SQL queries, such as searching for movies, retrieving categories, and ratings.
 - **ui.py**: Handles the user interface, including displaying the menu and processing user selections.
 
 ---
 
-### Main Search Functions
+### Key Search Functions
 - **Keyword Search**: Allows users to search for movies by description.
-- **Category and Year Search**: Users can filter movies by selected category and release year.
-- **Rating and Year Search**: Provides the ability to search for movies by rating and release year.
-- **Viewing Popular Queries**: Displays the most frequently executed queries.
-- **Query Logging**: All user queries are saved in history for further analysis.
+- **Category and Year Search**: Users can filter movies by selected category and year of release.
+- **Rating and Year Search**: Provides the ability to search for movies by rating and year of release.
+- **View Popular Queries**: Displays the most frequently executed search queries, stored in a separate database table.
+- **Query Logging**: All user queries are saved in the history for further analysis.
 
 ---
 
 ### User Interface
-The application interface is simple and intuitive:
-- Users can choose actions from the menu, enter search parameters, and receive results in table format.
-- Results are displayed with pagination options, allowing users to view data in parts.
+The application's interface is simple and intuitive:
+- Users can select actions from the menu, enter search parameters, and receive results in a tabular format.
+- The results are displayed with pagination, allowing users to view the data in parts.
 
 ---
 
 ### Conclusion
-This project provides a powerful tool for searching movies, which can be useful both for end users and for developers looking to expand the application's functionality. The logging and error-handling capabilities make the system reliable and user-friendly.
-
+This console application for movie search provides a powerful tool that can be useful for both end-users and developers who want to expand the functionality. The logging capabilities and error handling make the system reliable and convenient to use.
 ---
 
 ### Описание проекта: Поиск фильмов
 
-Проект представляет собой веб-приложение для поиска фильмов, которое позволяет пользователям осуществлять поиск по различным критериям, таким как ключевые слова, категория, год выпуска и рейтинг. Основная цель системы - предоставить пользователям удобный интерфейс для нахождения интересующих их фильмов и получения информации о них.
+Проект представляет собой консольное приложение для поиска фильмов, которое позволяет пользователям осуществлять поиск по различным критериям, таким как ключевые слова, категория, год выпуска и рейтинг. Основная цель системы - предоставить пользователям удобный интерфейс для нахождения интересующих их фильмов и получения информации о них.
 
 ---
 
 ### База данных
-Используется **MySQL** для хранения информации о фильмах, категориях, рейтингах и истории запросов. В проекте определены две конфигурации базы данных: для чтения и записи.
+Используется **MySQL** для хранения информации о фильмах, категориях, рейтингах и истории запросов. В проекте определены две конфигурации базы данных: для чтения и записи. Информация о фильмах и связанных с ними данных храниться в структурированном виде, что облегчает доступ и манипуляции с этими данными.
 
 ---
 
