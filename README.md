@@ -37,6 +37,7 @@ The application's interface is simple and intuitive:
 
 ### Conclusion
 This console application for movie search provides a powerful tool that can be useful for both end-users and developers who want to expand the functionality. The logging capabilities and error handling make the system reliable and convenient to use.
+
 ---
 
 ### Описание проекта: Поиск фильмов
