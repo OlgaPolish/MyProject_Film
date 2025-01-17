@@ -1,6 +1,6 @@
-from queries import *
-from my_exceptions import continue_or_exit
-from typing import Optional, List, Tuple
+import queries
+import my_exceptions
+from typing import List, Tuple
 
 def show_menu() -> str:
     """
@@ -31,16 +31,16 @@ def choice_1(connection_query, connection_write) -> None:
     while True:
         keyword = input("Enter keyword: ").strip()
         if not keyword:
-            if not continue_or_exit("Keyword cannot be empty."):
+            if not my_exceptions.continue_or_exit("Keyword cannot be empty."):
                 break
             continue
 
         try:
             print(f"\033[35mMovies with keyword {keyword} \033[0m")
-            search_by_keyword(connection_query, connection_write, keyword)
+            queries.search_by_keyword(connection_query, connection_write, keyword)
             break
         except (Exception, ValueError, RuntimeError) as e:
-            if not continue_or_exit(f"{str(e)}. Try again?"):
+            if not my_exceptions.continue_or_exit(f"{str(e)}. Try again?"):
                 break
 
 def choice_2(connection_query, connection_write) -> None:
@@ -58,7 +58,7 @@ def choice_2(connection_query, connection_write) -> None:
         None
     """
     try:
-        categories: List[Tuple[int, str]] = get_categories(connection_query)
+        categories: List[Tuple[int, str]] = queries.get_categories(connection_query)
         if not categories:
             print("No categories available.")
             return
@@ -70,7 +70,7 @@ def choice_2(connection_query, connection_write) -> None:
         while True:
             category_id = input("\nEnter category number: ").strip()
             if not category_id.isdigit():
-                if not continue_or_exit("Invalid category ID"):
+                if not my_exceptions.continue_or_exit("Invalid category ID"):
                     return
                 continue
 
@@ -82,17 +82,17 @@ def choice_2(connection_query, connection_write) -> None:
             while True:
                 year = input("Enter year: ").strip()
                 if not year.isdigit():
-                    if not continue_or_exit("Please enter a valid YEAR"):
+                    if not my_exceptions.continue_or_exit("Please enter a valid YEAR"):
                         return
                     continue
 
                 try:
                     year = int(year)
                     print(f"\033[92mMovies in category {categories[category_id - 1][1]}, year: {year}\033[0m")
-                    if get_movies_by_category(connection_query, connection_write, category_id, year):
+                    if queries.get_movies_by_category(connection_query, connection_write, category_id, year):
                         return
                 except (ValueError, RuntimeError) as e:
-                    if not continue_or_exit(f"{str(e)}. Try again?"):
+                    if not my_exceptions.continue_or_exit(f"{str(e)}. Try again?"):
                         return
 
     except Exception as e:
@@ -113,7 +113,7 @@ def choice_3(connection_query, connection_write) -> None:
         None
     """
     try:
-        ratings: List[Tuple[int, str, str]] = get_ratings(connection_write)
+        ratings: List[Tuple[int, str, str]] = queries.get_ratings(connection_write)
         if not ratings:
             print("No rating categories available.")
             return
@@ -125,7 +125,7 @@ def choice_3(connection_query, connection_write) -> None:
         while True:
             choice_num = input("\nEnter rating number: ").strip()
             if not choice_num.isdigit():
-                if not continue_or_exit("Invalid rating ID"):
+                if not my_exceptions.continue_or_exit("Invalid rating ID"):
                     return
                 continue
 
@@ -138,17 +138,17 @@ def choice_3(connection_query, connection_write) -> None:
             while True:
                 year = input("Enter year: ").strip()
                 if not year.isdigit():
-                    if not continue_or_exit("Please enter a valid YEAR"):
+                    if not my_exceptions.continue_or_exit("Please enter a valid YEAR"):
                         return
                     continue
 
                 try:
                     year = int(year)
                     print(f"\033[94mMovies with rating {rating_id}, year: {year}\033[0m")
-                    if search_by_rating_and_year(connection_query, connection_write, rating_id, year):
+                    if queries.search_by_rating_and_year(connection_query, connection_write, rating_id, year):
                         return
                 except (ValueError, RuntimeError) as e:
-                    if not continue_or_exit(f"{str(e)}. Try again?"):
+                    if not my_exceptions.continue_or_exit(f"{str(e)}. Try again?"):
                         return
 
     except Exception as e:
@@ -165,6 +165,6 @@ def choice_4(connection_write) -> None:
         None
     """
     try:
-        show_popular_queries(connection_write)
+        queries.show_popular_queries(connection_write)
     except Exception as e:
         raise RuntimeError(f"Error fetching popular queries: {e}")
