@@ -1,6 +1,5 @@
-from db import create_connection_mysql_db_query, create_connection_mysql_db_write
-from ui import *
-
+import ui
+import db
 def main():
     """
     Main function to run the movie search system.
@@ -10,23 +9,23 @@ def main():
 
     """
     try:
-        connection_query = create_connection_mysql_db_query()
-        connection_write = create_connection_mysql_db_write()
+        connection_query = db.create_connection_mysql_db_query()
+        connection_write = db.create_connection_mysql_db_write()
         print("\033[93m \nWelcome to the Movie Search System!\033[0m")
         while True:
-            choice = show_menu()
+            choice = ui.show_menu()
 
             if choice == "1":
-                choice_1(connection_query, connection_write)
+                ui.choice_1(connection_query, connection_write)
 
             elif choice == "2":
-                choice_2(connection_query, connection_write)
+                ui.choice_2(connection_query, connection_write)
 
             elif choice == "3":
-                choice_3(connection_query, connection_write)
+                ui.choice_3(connection_query, connection_write)
 
             elif choice == "4":
-                choice_4(connection_write)
+                ui.choice_4(connection_write)
                 input("\033[94mPress any key to continue...\033[0m")
 
             elif choice == "5":

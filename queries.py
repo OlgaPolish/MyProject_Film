@@ -1,8 +1,8 @@
-from print_results import print_results_as_table
+import print_results
 from pymysql.err import MySQLError
 from typing import List, Tuple, Optional
 
-def get_categories(connection_query) -> List[Tuple[int, str]]:
+def get_categories(connection_query: object) -> list[tuple]:
     """
     Retrieve a list of categories from the database.
 
@@ -24,25 +24,35 @@ def get_categories(connection_query) -> List[Tuple[int, str]]:
 
 def search_by_keyword(connection_query, connection_write, keyword: str) -> None:
     """
-    Search for films by a keyword in their description.
+    Search for films by a keyword in their title, description, or actor names.
 
     Args:
         connection_query (object): Database connection object for querying data.
         connection_write (object): Database connection object for logging queries.
-        keyword (str): The keyword to search for in film descriptions.
+        keyword (str): The keyword to search for.
 
     Raises:
         RuntimeError: If no films are found for the given keyword.
     """
-    query = "SELECT title, description, release_year FROM film WHERE description LIKE %s;"
-    results = execute_query(connection_query, query, (f"%{keyword}%",))
+    query = """
+        SELECT f.title, f.description, f.release_year
+        FROM film f
+        JOIN film_actor fa ON f.film_id = fa.film_id
+        JOIN actor a ON fa.actor_id = a.actor_id
+        WHERE f.title LIKE %s
+           OR f.description LIKE %s
+           OR a.first_name LIKE %s
+           OR a.last_name LIKE %s
+        GROUP BY f.film_id
+    """
+    results = execute_query(connection_query, query, (f"%{keyword}%", f"%{keyword}%", f"%{keyword}%", f"%{keyword}%"))
     if results:
-        print_results_as_table(results, ["Title", "Description", "Year"])
+        print_results.print_results_as_table(results, ["Title", "Description", "Year"])
         log_query(connection_write, query, "keyword", keyword)
     else:
         raise RuntimeError("No results found for the given keyword.")
 
-def get_ratings(connection_write) -> List[Tuple[int, str, str]]:
+def get_ratings(connection_write) -> list[tuple]:
     """
     Retrieve a list of available ratings from the database.
 
@@ -90,7 +100,7 @@ def get_movies_by_category(connection_query, connection_write, category_id: int,
         results = execute_query(connection_query, query, (category_id, year))
         if results:
             log_query(connection_write, query, "category_and_year", f"Category ID: {category_id}, Year: {year}")
-            print_results_as_table(results, ["Title", "Year", "Description"])
+            print_results.print_results_as_table(results, ["Title", "Year", "Description"])
         else:
             raise RuntimeError(f"No movies found for category {category_id} for the year {year}.")
     except ValueError as e:
@@ -127,7 +137,7 @@ def search_by_rating_and_year(connection_query, connection_write, rating: str, y
         results = execute_query(connection_query, query, (rating, year))
         if results:
             log_query(connection_write, query, "rating_and_year", f"Rating: {rating}, Year: {year}")
-            print_results_as_table(results, ["Title", "Year", "Description"])
+            print_results.print_results_as_table(results, ["Title", "Year", "Description"])
         else:
             raise RuntimeError(f"No movies found for rating {rating} for the year {year}.")
     except ValueError as e:
@@ -155,7 +165,7 @@ def show_popular_queries(connection_write) -> None:
     results = execute_query(connection_write, query)
     if results:
         print("\nPopular Queries:")
-        print_results_as_table(results, ["Query_type", "Count"])
+        print_results.print_results_as_table(results, ["Query_type", "Count"])
 
         # Ask the user for the query number
         choice = input("\nEnter the query number to get all records: ").strip()
@@ -193,11 +203,11 @@ def fetch_and_display_records(connection_write, query_type: str) -> None:
     results = execute_query(connection_write, query, (query_type,))
 
     if results:
-        print_results_as_table(results, ["ID_Query", "Query_Type", "Keyword"])
+        print_results.print_results_as_table(results, ["ID_Query", "Query_Type", "Keyword"])
     else:
         raise RuntimeError(f"No records for query type: {query_type}.") #ghjdthbnm!
 
-def log_query(connection_write, query_text: str, query_type: str, keyword: str) -> None:
+def log_query(connection_write: object, query_text: str, query_type: str, keyword: str) -> None:
     """
     Log a query into the query history table.
 
