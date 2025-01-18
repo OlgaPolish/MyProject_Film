@@ -1,6 +1,6 @@
 ### Project Description: Console Application for Movie Search
 
-The project represents a console application for searching movies, which uses the Sakila database as the data source. The main goal of the system is to provide users with a convenient interface for finding movies of interest and obtaining information about them.
+This project represents an educational console application for searching movies, which uses the Sakila database as the data source. The main goal of the system is to provide users with a convenient interface for finding movies of interest and obtaining information about them.
 
 ---
 
@@ -41,8 +41,7 @@ This console application for movie search provides a powerful tool that can be u
 ---
 
 ### Описание проекта: Поиск фильмов
-
-Проект представляет собой консольное приложение для поиска фильмов, которое позволяет пользователям осуществлять поиск по различным критериям, таким как ключевые слова, категория, год выпуска и рейтинг. Основная цель системы - предоставить пользователям удобный интерфейс для нахождения интересующих их фильмов и получения информации о них.
+Данный проект представляет собой учебное консольное приложение для поиска фильмов, которое использует базу данных Sakila в качестве источника данных. Основная цель системы — предоставить пользователям удобный интерфейс для поиска интересующих фильмов и получения информации о них.
 
 ---
 
