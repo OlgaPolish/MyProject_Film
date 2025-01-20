@@ -1,5 +1,7 @@
 import ui
 import db
+from settings import COLORS
+
 def main():
     """
     Main function to run the movie search system.
@@ -11,7 +13,7 @@ def main():
     try:
         connection_query = db.create_connection_mysql_db_query()
         connection_write = db.create_connection_mysql_db_write()
-        print("\033[93m \nWelcome to the Movie Search System!\033[0m")
+        print(f"{COLORS['yellow']} \nWelcome to the Movie Search System!{COLORS['reset']}")
         while True:
             choice = ui.show_menu()
 
@@ -26,18 +28,25 @@ def main():
 
             elif choice == "4":
                 ui.choice_4(connection_write)
-                input("\033[94mPress any key to continue...\033[0m")
+                input(f"{COLORS['blue']} \nPress any key to continue...{COLORS['reset']}")
+                # input("\033[94mPress any key to continue...\033[0m")
 
             elif choice == "5":
-                print("\033[93mGoodbye!\033[0m")
                 break
-
             else:
-                print("\033[96mInvalid choice, please try again\033[0m")
+                print(f"{COLORS['red']}Invalid choice, please try again{COLORS['reset']}")
 
     finally:
-        connection_query.close()
-        connection_write.close()
+
+        if connection_query:
+            connection_query.close()
+
+        if connection_write:
+            connection_write.close()
+
 
 if __name__ == "__main__":
     main()
+
+
+
