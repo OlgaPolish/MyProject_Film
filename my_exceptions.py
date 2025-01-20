@@ -1,3 +1,19 @@
+class DBConnectionError(Exception):
+    """Raised when there is an error connecting to the database."""
+    pass
+
+class InvalidInputError(Exception):
+    """Raised when the user input is invalid."""
+    pass
+
+class NoResultsError(Exception):
+    """Raised when no results are found for a query."""
+    pass
+
+class QueryExecutionError(Exception):
+    """Raised when there is an error executing a SQL query."""
+    pass
+
 def continue_or_exit(message: str) -> bool:
     """
     Prompts the user to continue or exit based on their input.

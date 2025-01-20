@@ -3,6 +3,7 @@ import my_exceptions
 from settings import COLORS
 from typing import List, Tuple
 
+
 def show_menu() -> str:
     """
     Displays the main user menu with available search options.
@@ -19,6 +20,16 @@ def show_menu() -> str:
     return input(f"{COLORS['blue']}\nSelect action {COLORS['reset']} (1-5): ").strip()
 
 def choice_1(connection_query, connection_write) -> None:
+    """
+    Handles movie search by keyword.
+
+    Args:
+        connection_query: Database connection object for queries
+        connection_write: Database connection object for writing
+
+    Returns:
+        None
+    """
     while True:
         keyword = input("Enter keyword: ").strip()
         if not keyword:
@@ -26,15 +37,28 @@ def choice_1(connection_query, connection_write) -> None:
                 break
             continue
 
-        print(f"{COLORS['blue']}Movies with keyword {keyword}{COLORS['reset']}")
         try:
+            print(f"{COLORS['blue']}Movies with keyword {keyword}{COLORS['reset']}")
             queries.search_by_keyword(connection_query, connection_write, keyword)
             break
-        except RuntimeError as e:
+        except (Exception, ValueError, RuntimeError) as e:
             if not my_exceptions.continue_or_exit(f"{str(e)}. Try again?"):
                 break
 
 def choice_2(connection_query, connection_write) -> None:
+    """
+    Handles movie search by category and year.
+
+    Args:
+        connection_query: Database connection object for queries
+        connection_write: Database connection object for writing
+
+    Raises:
+        RuntimeError: If error occurs while fetching categories
+
+    Returns:
+        None
+    """
     try:
         categories: List[Tuple[int, str]] = queries.get_categories(connection_query)
         if not categories:
@@ -47,17 +71,20 @@ def choice_2(connection_query, connection_write) -> None:
 
         while True:
             category_id = input("\nEnter category number: ").strip()
-            try:
-                category_id = my_exceptions.rating_validate(category_id, len(categories))
-            except ValueError as e:
-                if not my_exceptions.continue_or_exit(str(e)):
+            if not category_id.isdigit():
+                if not my_exceptions.continue_or_exit("Invalid category ID"):
                     return
+                continue
+
+            category_id = int(category_id)
+            if not any(cat[0] == category_id for cat in categories):
+                print("Invalid category ID.")
                 continue
 
             while True:
                 year: str = input("Enter year: ").strip()
                 try:
-                    year = my_exceptions.year_validate(year)
+                    year = my_exceptions.year_validate(year)  # Use year_validate for validation
                     print(f"{COLORS['blue']}Movies in category {categories[category_id - 1][1]}, year: {year}{COLORS['reset']}")
                     if queries.get_movies_by_category(connection_query, connection_write, category_id, year):
                         return
@@ -65,11 +92,23 @@ def choice_2(connection_query, connection_write) -> None:
                     if not my_exceptions.continue_or_exit(f"{COLORS['red']}{str(e)}.{COLORS['reset']}"):
                         return
 
-    except RuntimeError as e:
-        print(f"Error fetching categories: {e}")
-
+    except Exception as e:
+        raise RuntimeError(f"Error fetching categories: {e}")
 
 def choice_3(connection_query, connection_write) -> None:
+    """
+    Handles movie search by rating and year.
+
+    Args:
+        connection_query: Database connection object for queries
+        connection_write: Database connection object for writing
+
+    Raises:
+        RuntimeError: If error occurs while fetching ratings
+
+    Returns:
+        None
+    """
     try:
         ratings: List[Tuple[int, str, str]] = queries.get_ratings(connection_write)
         if not ratings:
@@ -82,18 +121,21 @@ def choice_3(connection_query, connection_write) -> None:
 
         while True:
             choice_num = input("\nEnter rating number: ").strip()
-            try:
-                choice_num = my_exceptions.rating_validate(choice_num, len(ratings))
-            except ValueError as e:
-                if not my_exceptions.continue_or_exit(str(e)):
+            if not choice_num.isdigit():
+                if not my_exceptions.continue_or_exit("Invalid rating ID"):
                     return
+                continue
+
+            choice_num = int(choice_num)
+            if not 1 <= choice_num <= len(ratings):
+                print("Invalid rating ID.")
                 continue
 
             rating_id = ratings[choice_num - 1][1]
             while True:
                 year = input("Enter year: ").strip()
                 try:
-                    year = my_exceptions.year_validate(year)
+                    year = my_exceptions.year_validate(year)  # Use year_validate for validation
                     print(f"{COLORS['blue']}Movies with rating {rating_id}, year: {year}{COLORS['reset']}")
                     if queries.search_by_rating_and_year(connection_query, connection_write, rating_id, year):
                         return
@@ -101,9 +143,8 @@ def choice_3(connection_query, connection_write) -> None:
                     if not my_exceptions.continue_or_exit(f"{str(e)}. Try again?"):
                         return
 
-    except RuntimeError as e:
-        print(f"Error fetching ratings: {e}")
-
+    except Exception as e:
+        raise RuntimeError(f"Error fetching ratings: {e}")
 
 def choice_4(connection_write) -> None:
     """
