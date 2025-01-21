@@ -2,7 +2,7 @@ import print_results
 from pymysql.err import MySQLError
 from typing import List, Tuple, Optional
 
-def get_categories(connection_query: object) -> list[tuple]:
+def get_categories(connection_query: object) -> List[Tuple]:
     """
     Retrieve a list of categories from the database.
 
@@ -10,7 +10,7 @@ def get_categories(connection_query: object) -> list[tuple]:
         connection_query (object): Database connection object for querying data.
 
     Returns:
-        list: A list of tuples containing category_id and name.
+        List[Tuple]: A list of tuples containing category_id and name.
 
     Raises:
         RuntimeError: If no categories are found in the database.
@@ -52,7 +52,7 @@ def search_by_keyword(connection_query, connection_write, keyword: str) -> None:
     else:
         raise RuntimeError("No results found for the given keyword.")
 
-def get_ratings(connection_write) -> list[tuple]:
+def get_ratings(connection_write) -> List[Tuple]:
     """
     Retrieve a list of available ratings from the database.
 
@@ -60,7 +60,7 @@ def get_ratings(connection_write) -> list[tuple]:
         connection_write (object): Database connection object for querying data.
 
     Returns:
-        list: A list of tuples containing rating_id, rating_code, and description.
+        List[Tuple]: A list of tuples containing rating_id, rating_code, and description.
 
     Raises:
         RuntimeError: If no ratings are found in the database.
@@ -87,26 +87,19 @@ def get_movies_by_category(connection_query, connection_write, category_id: int,
 
     Raises:
         RuntimeError: If no movies are found for the specified category and year.
-        ValueError: If there is an issue with the input values.
-        RuntimeError: For any unexpected errors during execution.
     """
-    try:
-        query = """
-        SELECT film.title, film.release_year, film.description
-        FROM film
-        INNER JOIN film_category ON film.film_id = film_category.film_id
-        WHERE film_category.category_id = %s AND film.release_year = %s;
-        """
-        results = execute_query(connection_query, query, (category_id, year))
-        if results:
-            log_query(connection_write, query, "category_and_year", f"Category ID: {category_id}, Year: {year}")
-            print_results.print_results_as_table(results, ["Title", "Year", "Description"])
-        else:
-            raise RuntimeError(f"No movies found for category {category_id} for the year {year}.")
-    except ValueError as e:
-        raise ValueError(f"Input Error: {e}")
-    except Exception as e:
-        raise RuntimeError(f"An unexpected error occurred: {e}")
+    query = """
+    SELECT film.title, film.release_year, film.description
+    FROM film
+    INNER JOIN film_category ON film.film_id = film_category.film_id
+    WHERE film_category.category_id = %s AND film.release_year = %s;
+    """
+    results = execute_query(connection_query, query, (category_id, year))
+    if results:
+        log_query(connection_write, query, "category_and_year", f"Category ID: {category_id}, Year: {year}")
+        print_results.print_results_as_table(results, ["Title", "Year", "Description"])
+    else:
+        raise RuntimeError(f"No movies found for category {category_id} for the year {year}.")
     return True
 
 def search_by_rating_and_year(connection_query, connection_write, rating: str, year: int) -> bool:
@@ -124,26 +117,19 @@ def search_by_rating_and_year(connection_query, connection_write, rating: str, y
 
     Raises:
         RuntimeError: If no movies are found for the specified rating and year.
-        ValueError: If there is an issue with the input values.
-        RuntimeError: For any unexpected errors during execution.
     """
-    try:
-        query = """
-        SELECT f.title, f.release_year, f.description
-        FROM film f
-        JOIN Project_OlgaP.movie_ratings mr ON f.rating = mr.rating_code
-        WHERE f.rating = %s AND f.release_year = %s;
-        """
-        results = execute_query(connection_query, query, (rating, year))
-        if results:
-            log_query(connection_write, query, "rating_and_year", f"Rating: {rating}, Year: {year}")
-            print_results.print_results_as_table(results, ["Title", "Year", "Description"])
-        else:
-            raise RuntimeError(f"No movies found for rating {rating} for the year {year}.")
-    except ValueError as e:
-        raise ValueError(f"Input Error: {e}")
-    except Exception as e:
-        raise RuntimeError(f"An unexpected error occurred: {e}")
+    query = """
+    SELECT f.title, f.release_year, f.description
+    FROM film f
+    JOIN Project_OlgaP.movie_ratings mr ON f.rating = mr.rating_code
+    WHERE f.rating = %s AND f.release_year = %s;
+    """
+    results = execute_query(connection_query, query, (rating, year))
+    if results:
+        log_query(connection_write, query, "rating_and_year", f"Rating: {rating}, Year: {year}")
+        print_results.print_results_as_table(results, ["Title", "Year", "Description"])
+    else:
+        raise RuntimeError(f"No movies found for rating {rating} for the year {year}.")
     return True
 
 def show_popular_queries(connection_write) -> None:
@@ -205,7 +191,7 @@ def fetch_and_display_records(connection_write, query_type: str) -> None:
     if results:
         print_results.print_results_as_table(results, ["ID_Query", "Query_Type", "Keyword"])
     else:
-        raise RuntimeError(f"No records for query type: {query_type}.") #ghjdthbnm!
+        raise RuntimeError(f"No records for query type: {query_type}.")
 
 def log_query(connection_write: object, query_text: str, query_type: str, keyword: str) -> None:
     """
@@ -233,29 +219,20 @@ def execute_query(connection, query: str, parameters: Optional[Tuple] = None) ->
         parameters (tuple, optional): Parameters to safely insert into the query. Defaults to None.
 
     Returns:
-        list: If the query is a SELECT statement, returns a list of tuples containing the fetched rows.
+        List[Tuple]: If the query is a SELECT statement, returns a list of tuples containing the fetched rows.
         None: If the query is not a SELECT statement, commits the changes and returns nothing.
 
     Raises:
         RuntimeError: If there is an error during query execution, it raises a RuntimeError with the error message.
-
-    Notes:
-        - For SELECT queries, the function fetches and returns all rows.
-        - For non-SELECT queries (e.g., INSERT, UPDATE, DELETE), the function commits the transaction.
-        - In case of an error, the transaction is rolled back to maintain database integrity.
     """
     cursor = connection.cursor()
     try:
-        # Execute the query with provided parameters or an empty tuple if no parameters are given
         cursor.execute(query, parameters if parameters is not None else ())
 
-        # If the query is a SELECT statement, fetch and return the results
         if query.strip().lower().startswith("select"):
             return cursor.fetchall()
         else:
-            # Commit the transaction for non-SELECT queries
             connection.commit()
     except MySQLError as e:
-        # Rollback the transaction in case of an error
         connection.rollback()
         raise RuntimeError(f"An error occurred during query execution: {e}")
