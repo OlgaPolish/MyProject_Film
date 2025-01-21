@@ -71,15 +71,7 @@ def choice_2(connection_query, connection_write) -> None:
 
         while True:
             category_id = input("\nEnter category number: ").strip()
-            if not category_id.isdigit():
-                if not my_exceptions.continue_or_exit("Invalid category ID"):
-                    return
-                continue
-
-            category_id = int(category_id)
-            if not any(cat[0] == category_id for cat in categories):
-                print("Invalid category ID.")
-                continue
+            category_id = my_exceptions.rating_validate(category_id, len(categories))
 
             while True:
                 year: str = input("Enter year: ").strip()
@@ -91,9 +83,12 @@ def choice_2(connection_query, connection_write) -> None:
                 except ValueError as e:
                     if not my_exceptions.continue_or_exit(f"{COLORS['red']}{str(e)}.{COLORS['reset']}"):
                         return
-
     except Exception as e:
-        raise RuntimeError(f"Error fetching categories: {e}")
+        print(f"{COLORS['green']} Error fetching categories: {e}{COLORS['reset']}")
+        if my_exceptions.continue_or_exit(f"Try again?"):
+            choice_2(connection_query, connection_write)  # Recursive call to restart the function
+        else:
+            return
 
 def choice_3(connection_query, connection_write) -> None:
     """
@@ -121,16 +116,7 @@ def choice_3(connection_query, connection_write) -> None:
 
         while True:
             choice_num = input("\nEnter rating number: ").strip()
-            if not choice_num.isdigit():
-                if not my_exceptions.continue_or_exit("Invalid rating ID"):
-                    return
-                continue
-
-            choice_num = int(choice_num)
-            if not 1 <= choice_num <= len(ratings):
-                print("Invalid rating ID.")
-                continue
-
+            choice_num = my_exceptions.rating_validate(choice_num, len(ratings))
             rating_id = ratings[choice_num - 1][1]
             while True:
                 year = input("Enter year: ").strip()
@@ -144,7 +130,12 @@ def choice_3(connection_query, connection_write) -> None:
                         return
 
     except Exception as e:
-        raise RuntimeError(f"Error fetching ratings: {e}")
+        print(f"{COLORS['green']} Error fetching ratings:: {e}{COLORS['reset']}")
+        if my_exceptions.continue_or_exit(f"Try again?"):
+            choice_3(connection_query, connection_write)  # Recursive call to restart the function
+        else:
+            return
+
 
 def choice_4(connection_write) -> None:
     """
@@ -159,4 +150,4 @@ def choice_4(connection_write) -> None:
     try:
         queries.show_popular_queries(connection_write)
     except Exception as e:
-        raise RuntimeError(f"Error fetching popular queries: {e}")
+        print(f"{COLORS['green']}Error fetching popular queries: {e}{COLORS['reset']}")
