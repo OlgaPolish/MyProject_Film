@@ -25,22 +25,17 @@ def main():
             elif choice == "2":
                 ui.choice_2(connection_query, connection_write)
 
-
             elif choice == "3":
                 ui.choice_3(connection_query, connection_write)
 
             elif choice == "4":
                 ui.choice_4(connection_write)
-#                input(f"{COLORS['blue']} \nPress any key to continue...{COLORS['reset']}")
 
             elif choice == "5":
                 print(f"{COLORS['yellow']}Goodbye!{COLORS['reset']}")
                 break
             else:
                 print(f"{COLORS['red']}Invalid choice, please try again{COLORS['reset']}")
-
-    # except my_exceptions.DBConnectionError as e:
-    #     print(f"{COLORS['red']}Error: {e}{COLORS['reset']}")
     except Exception as e:
         print(f"{COLORS['green']}An unexpected error occurred: {e}{COLORS['reset']}")
     finally:
@@ -48,7 +43,6 @@ def main():
             connection_query.close()
         if connection_write:
             connection_write.close()
-
 
 if __name__ == "__main__":
     main()
