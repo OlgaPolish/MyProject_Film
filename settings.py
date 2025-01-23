@@ -10,6 +10,14 @@ Attributes:
         - "reset"
 """
 
+MENU_ITEMS = (
+    '1. Keyword in description.',
+    '2. Category and year.',
+    '3. Rating and year.',
+    '4. View popular queries.',
+    '5. Exit.'
+)
+
 COLORS = {
     "yellow": "\033[93m",
     "blue": "\033[94m",
