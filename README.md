@@ -16,6 +16,7 @@ The application uses **MySQL** to store information about movies, categories, ra
 - **print_results.py**: Responsible for displaying the query results in a tabular format with pagination.
 - **queries.py**: Contains functions for executing various SQL queries, such as searching for movies, retrieving categories, and ratings.
 - **ui.py**: Handles the user interface, including displaying the menu and processing user selections.
+- **settings.py**: Defines the settings. For example, such as ANSI color codes for console output.
 
 ---
 
@@ -57,6 +58,7 @@ This console application for movie search provides a powerful tool that can be u
 - **print_results.py**: Отвечает за вывод результатов запросов в виде таблицы с пагинацией.
 - **queries.py**: Содержит функции для выполнения различных SQL-запросов, таких как поиск фильмов, получение категорий и рейтингов.
 - **ui.py**: Обрабатывает пользовательский интерфейс, включая отображение меню и обработку выбора пользователя.
+- **settings.py**: Определяет настройки. Например, такие как цветовые коды ANSI для консольного вывода.
 
 ---
 
