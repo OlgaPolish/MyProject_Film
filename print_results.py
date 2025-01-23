@@ -37,7 +37,6 @@ def print_results_as_table(data: Iterable[Tuple], column_names: List[str]) -> No
 
             choice = input(f"\nDisplayed {row_count} out of {total_rows} rows. Press 'y' to show the next 10 rows, or any other key to exit: ").lower()
             if choice != 'y':
-                print("\033[94m\nExiting...\033[0m")
                 return
 
     # Print remaining rows, if any

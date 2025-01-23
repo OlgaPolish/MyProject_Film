@@ -3,21 +3,15 @@ import my_exceptions
 from settings import COLORS
 from typing import List, Tuple
 
-
-def show_menu() -> str:
+def show_menu(menu_items: tuple) -> None:
     """
     Displays the main user menu with available search options.
 
-    Returns:
-        str: Menu item selected by user (1-5)
+    Args:
+        menu_items (tuple): Available menu items to display.
     """
     print(f"{COLORS['blue']}\nYou can search movies by the following parameters: {COLORS['reset']}")
-    print("1. Keyword in description.")
-    print("2. Category and year.")
-    print("3. Rating and year.")
-    print("4. View popular queries.")
-    print("5. Exit.")
-    return input(f"{COLORS['blue']}\nSelect action {COLORS['reset']} (1-5): ").strip()
+    print('\n'.join(menu_items))
 
 def choice_1(connection_query, connection_write) -> None:
     """
@@ -33,7 +27,7 @@ def choice_1(connection_query, connection_write) -> None:
     while True:
         keyword = input("Enter keyword: ").strip()
         if not keyword:
-            if not my_exceptions.continue_or_exit("Keyword cannot be empty."):
+            if not my_exceptions.continue_or_exit(f"{COLORS['green']}Keyword cannot be empty.{COLORS['reset']}"):
                 break
             continue
 
@@ -44,6 +38,7 @@ def choice_1(connection_query, connection_write) -> None:
         except (Exception, ValueError, RuntimeError) as e:
             if not my_exceptions.continue_or_exit(f"{str(e)}. Try again?"):
                 break
+
 
 def choice_2(connection_query, connection_write) -> None:
     """
@@ -75,16 +70,12 @@ def choice_2(connection_query, connection_write) -> None:
 
             while True:
                 year: str = input("Enter year: ").strip()
-                try:
-                    year = my_exceptions.year_validate(year)  # Use year_validate for validation
-                    print(f"{COLORS['blue']}Movies in category {categories[category_id - 1][1]}, year: {year}{COLORS['reset']}")
-                    if queries.get_movies_by_category(connection_query, connection_write, category_id, year):
-                        return
-                except ValueError as e:
-                    if not my_exceptions.continue_or_exit(f"{COLORS['red']}{str(e)}.{COLORS['reset']}"):
-                        return
+                year = my_exceptions.year_validate(year)  # Use year_validate for validation
+                print(f"{COLORS['blue']}Movies in category {categories[category_id - 1][1]}, year: {year}{COLORS['reset']}")
+                if queries.get_movies_by_category(connection_query, connection_write, category_id, year):
+                    return
     except Exception as e:
-        print(f"{COLORS['green']} Error fetching categories: {e}{COLORS['reset']}")
+        print(f"{COLORS['red']}Error fetching categories: {e}{COLORS['reset']}")
         if my_exceptions.continue_or_exit(f"Try again?"):
             choice_2(connection_query, connection_write)  # Recursive call to restart the function
         else:
@@ -120,17 +111,13 @@ def choice_3(connection_query, connection_write) -> None:
             rating_id = ratings[choice_num - 1][1]
             while True:
                 year = input("Enter year: ").strip()
-                try:
-                    year = my_exceptions.year_validate(year)  # Use year_validate for validation
-                    print(f"{COLORS['blue']}Movies with rating {rating_id}, year: {year}{COLORS['reset']}")
-                    if queries.search_by_rating_and_year(connection_query, connection_write, rating_id, year):
-                        return
-                except ValueError as e:
-                    if not my_exceptions.continue_or_exit(f"{str(e)}. Try again?"):
-                        return
 
+                year = my_exceptions.year_validate(year)  # Use year_validate for validation
+                print(f"{COLORS['blue']}Movies with rating {rating_id}, year: {year}{COLORS['reset']}")
+                if queries.search_by_rating_and_year(connection_query, connection_write, rating_id, year):
+                    return
     except Exception as e:
-        print(f"{COLORS['green']} Error fetching ratings:: {e}{COLORS['reset']}")
+        print(f"{COLORS['red']}Error fetching ratings. {e}{COLORS['reset']}")
         if my_exceptions.continue_or_exit(f"Try again?"):
             choice_3(connection_query, connection_write)  # Recursive call to restart the function
         else:
